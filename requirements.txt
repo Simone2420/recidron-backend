@@ -12,7 +12,8 @@ pydantic-settings==2.1.0
 
 # Project Dependencies
 
-## mysql-connector-python==8.2.0
-#Official MySQL connector for Python that enables direct communication with MySQL databases. Provides a pure Python implementation for connecting to MySQL servers, executing queries, and managing database operations without requiring external C extensions. Version 8.2.0 includes improved performance, bug fixes, and enhanced compatibility with modern MySQL server versions.
-mysql-connector-python==8.2.0
-#psycopg2-binary==2.9.9
+# MySQL connector
+
+
+# PostgreSQL connector
+psycopg2-binary==2.9.9

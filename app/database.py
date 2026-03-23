@@ -3,7 +3,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config import settings
 
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+## Descomentar la línea correspondiente según la base de datos que se quiera usar. Por defecto, se usará MySQL.
+#engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(settings.ALTERNATE_DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

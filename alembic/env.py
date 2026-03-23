@@ -32,7 +32,8 @@ target_metadata = Base.metadata
 
 
 def get_database_url() -> str:
-    database_url = os.getenv("DATABASE_URL")
+    database_url = os.getenv("ALTERNATE_DATABASE_URL")
+    #database_url = os.getenv("DATABASE_URL")
     if not database_url:
         raise RuntimeError(
             "DATABASE_URL is not set. Define it in .env or environment variables before running Alembic."
