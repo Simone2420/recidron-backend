@@ -1,6 +1,6 @@
 # Recidron Backend
 
-A FastAPI-based backend application with MySQL database support.
+A FastAPI-based backend application with support for MySQL and PostgreSQL databases.
 
 ## Tech Stack
 
@@ -8,9 +8,9 @@ A FastAPI-based backend application with MySQL database support.
 - **Uvicorn** (0.24.0) - ASGI server for running FastAPI applications
 - **SQLAlchemy** (2.0.23) - SQL toolkit and ORM
 - **Alembic** (1.12.1) - Database migration tool
-- **Pydantic** - Data validation using Python type annotations
-- **python-dotenv** - Environment variable management
+- **Pydantic** (2.5.2) - Data validation using Python type annotations
 - **MySQL Connector** (8.2.0) - MySQL database driver
+- **psycopg2** (2.9.9) - PostgreSQL database driver
 
 ## Project Structure
 
@@ -20,12 +20,23 @@ recidron-backend/
 │   ├── __init__.py
 │   ├── main.py           # FastAPI application entry point
 │   ├── config.py         # Configuration settings
-│   ├── models/          # SQLAlchemy models
-│   ├── schemas/         # Pydantic schemas
-│   ├── routes/          # API routes/endpoints
-│   └── services/        # Business logic
+│   ├── database.py       # Database connection setup
+│   ├── models/           # SQLAlchemy models (modular)
+│   │   ├── __init__.py
+│   │   └── item.py
+│   ├── schemas/          # Pydantic schemas (modular)
+│   │   ├── __init__.py
+│   │   └── item.py
+│   ├── routes/           # API routes/endpoints (modular)
+│   │   ├── __init__.py
+│   │   └── item.py
+│   ├── services/         # Business logic (modular)
+│   │   ├── __init__.py
+│   │   └── item.py
+│   └── middlewares/      # Custom middlewares
+│       ├── __init__.py
+│       └── timer.py
 ├── alembic/             # Database migrations
-├── tests/               # Test files
 ├── .env                 # Environment variables
 ├── requirements.txt     # Project dependencies
 └── README.md
@@ -34,7 +45,8 @@ recidron-backend/
 ## Prerequisites
 
 - Python 3.10+
-- MySQL 8.0+
+- MySQL 8.0+ (primary database)
+- PostgreSQL 14+ (alternative database)
 
 ## Installation
 
@@ -68,33 +80,50 @@ recidron-backend/
    Create a `.env` file in the project root:
    ```env
    DATABASE_URL=mysql+mysqlconnector://user:password@localhost:3306/dbname
+   ALTERNATE_DATABASE_URL=postgresql://user:password@localhost:5432/dbname
    SECRET_KEY=your-secret-key
-   DEBUG=True
+   DEBUG=False
    ```
 
+   > **Note**: The application currently uses PostgreSQL (`ALTERNATE_DATABASE_URL`). To switch to MySQL, update both `app/database.py` and `alembic/env.py` to use `DATABASE_URL` instead.
+
 ## Database Setup
+
+### Option 1: PostgreSQL (Current Default)
+
+1. **Create PostgreSQL database**
+   ```sql
+   CREATE DATABASE recidron;
+   ```
+
+2. **Run migrations**
+   Alembic uses `ALTERNATE_DATABASE_URL` from `.env`:
+   ```bash
+   alembic upgrade head
+   ```
+
+### Option 2: MySQL
 
 1. **Create MySQL database**
    ```sql
    CREATE DATABASE recidron;
    ```
 
-2. **Run migrations**
-   Alembic reads `DATABASE_URL` from `.env`.
+2. **Update database configuration**
+   Change the database URL in two files:
+   - `app/database.py`: Replace `ALTERNATE_DATABASE_URL` with `DATABASE_URL`
+   - `alembic/env.py`: Uncomment `DATABASE_URL` and comment `ALTERNATE_DATABASE_URL` in the `get_database_url()` function
 
-   Verify the value is present before running migrations:
-   ```powershell
-   Get-Content .env | Select-String DATABASE_URL
-   ```
-
+3. **Run migrations**
    ```bash
    alembic upgrade head
    ```
 
-3. **Create new migration (if needed)**
-   ```bash
-   alembic revision --autogenerate -m "Description of changes"
-   ```
+### Creating Migrations
+
+```bash
+alembic revision --autogenerate -m "Description of changes"
+```
 
 ## Running the Application
 
@@ -113,14 +142,21 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 Once the application is running, access the interactive API documentation:
 
 - **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+
+
+## API Endpoints
+
+### Items
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/items/` | List all items (paginated) |
+| GET | `/items/{id}` | Get item by ID |
+| POST | `/items/` | Create new item |
+| PUT | `/items/{id}` | Update item |
+| DELETE | `/items/{id}` | Delete item |
 
 ## Development
-
-### Running Tests
-```bash
-pytest
-```
 
 ### Code Formatting
 ```bash
