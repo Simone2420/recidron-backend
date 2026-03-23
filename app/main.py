@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from app.routes import router as item_router
+from app.middlewares import TimerMiddleware
 
 app = FastAPI(
     title="Recidron API",
     description="A FastAPI backend with MySQL database",
     version="1.0.0",
 )
+
+# Registrar middlewares
+app.add_middleware(TimerMiddleware)
 
 app.include_router(item_router)
 
