@@ -1,17 +1,15 @@
-from pydantic_settings import BaseSettings
-import os
-import dotenv
-dotenv.load_dotenv()
-class Settings(BaseSettings):
-    # PostgreSQL (por defecto)
-    DATABASE_URL: str = os.getenv("DATABASE_URL")
-    ALTERNATE_DATABASE_URL: str = os.getenv("ALTERNATE_DATABASE_URL")
-    # MySQL (por defecto)
-    SECRET_KEY: str = os.getenv("SECRET_KEY")
-    DEBUG: bool = os.getenv("DEBUG")
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-    class Config:
-        env_file = ".env"
+
+class Settings(BaseSettings):
+    DATABASE_URL: str | None = None
+    ALTERNATE_DATABASE_URL: str | None = None
+    SECRET_KEY: str = "change-me"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    DEBUG: bool = False
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 settings = Settings()

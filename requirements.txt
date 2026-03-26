@@ -7,8 +7,10 @@ pydantic==2.5.2
 pydantic-settings==2.1.0
 
 # Authentication & Security
-passlib[bcrypt]==1.7.4
-python-jose[cryptography]==3.3.0
+passlib[argon2]>=1.7.4
+python-jose[cryptography]>=3.3.0
+argon2-cffi>=23.1.0
+python-multipart>=0.0.9
 
 # Project Dependencies
 
