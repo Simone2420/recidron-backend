@@ -125,6 +125,26 @@ recidron-backend/
 alembic revision --autogenerate -m "Description of changes"
 ```
 
+### Seed de permisos y roles
+
+Para inicializar permisos y roles de seguridad (sin duplicados):
+
+```bash
+python -m app.scripts.seed_security
+```
+
+Para asignar rol `admin` a un usuario ya registrado:
+
+```bash
+python -m app.scripts.seed_security --admin-username TU_USUARIO
+```
+
+Opcional, para marcar además ese usuario como superusuario:
+
+```bash
+python -m app.scripts.seed_security --admin-username TU_USUARIO --make-superuser
+```
+
 ## Running the Application
 
 **Development mode:**

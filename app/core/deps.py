@@ -8,7 +8,7 @@ from app.core.security import decode_access_token
 from app.database import get_db
 from app.models import Role, User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 def _get_user_effective_permissions(user: User) -> set[str]:
